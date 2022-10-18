@@ -1,0 +1,12 @@
+PLEX_URL = 'https://xxxxxx.plex.direct:32400/' # If running locally, can also enter IP directly "https://127.0.0.1:32400/"
+PLEX_TOKEN = 'xxxxxx' # https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/
+PLEX_BIF_FRAME_INTERVAL = 5
+THUMBNAIL_QUALITY = 4 # Allowed range is 2 - 6 with 2 being highest quality and largest file size and 6 being lowest quality and smallest file size. # 
+PLEX_LOCAL_MEDIA_PATH = '/path_to/plex/Library/Application Support/Plex Media Server/Media'
+TMP_FOLDER = '/dev/shm/plex_generate_previews'
+
+PLEX_LOCAL_VIDEOS_PATH_MAPPING = '/path/this/script/sees/to/video/library'
+PLEX_VIDEOS_PATH_MAPPING = '/path/plex/sees/to/video/library'
+
+GPU_THREADS = 4
+CPU_THREADS = 4
