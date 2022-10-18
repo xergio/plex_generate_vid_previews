@@ -8,5 +8,4 @@ TMP_FOLDER = '/dev/shm/plex_generate_previews'
 PLEX_LOCAL_VIDEOS_PATH_MAPPING = '/path/this/script/sees/to/video/library'
 PLEX_VIDEOS_PATH_MAPPING = '/path/plex/sees/to/video/library'
 
-GPU_THREADS = 4
-CPU_THREADS = 4
+THREADS = 4

@@ -77,18 +77,15 @@ def generate_images(video_file_param, output_folder, lock):
         "-vf",
         vf_parameters, '{}/img-%06d.jpg'.format(output_folder)
     ]
+    # let ffmpeg select the hwaccel, useful when using Intel's Quick Sync
+    args.insert(5, "-hwaccel")
+    args.insert(6, "auto")
+    logger.info(args)
+    sys.exit()
 
     start = time.time()
-    hw = False
 
     with lock:
-        gpu = gpustat.core.new_query()[0]
-        gpu_ffmpeg = [c for c in gpu.processes if c["command"].lower() == 'ffmpeg']
-        if len(gpu_ffmpeg) < config.GPU_THREADS or config.CPU_THREADS == 0:
-            hw = True
-            args.insert(5, "-hwaccel")
-            args.insert(6, "cuda")
-
         proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         # Allow time for it to start
         time.sleep(1)
@@ -105,7 +102,7 @@ def generate_images(video_file_param, output_folder, lock):
     speed = re.findall('speed= ?([0-9]+\.?[0-9]*|\.[0-9]+)x', err.decode('utf-8'))
     if speed:
         speed = speed[-1]
-    logger.info('Generated Video Preview for {} HW={} TIME={}seconds SPEED={}x '.format(video_file, hw, seconds, speed))
+    logger.info('Generated Video Preview for {} TIME={}seconds SPEED={}x '.format(video_file, seconds, speed))
 
     # Optimize and Rename Images
     for image in glob.glob('{}/img*.jpg'.format(output_folder)):
@@ -193,7 +190,7 @@ def process_item(item_key, lock):
 
 
 def run():
-    process_pool = ProcessPoolExecutor(max_workers=config.CPU_THREADS + config.GPU_THREADS)
+    process_pool = ProcessPoolExecutor(max_workers=config.THREADS)
 
     # Ignore SSL Errors
     sess = requests.Session()
@@ -205,7 +202,6 @@ def run():
     logger.info('Getting Movies from Plex')
     movies = [m.key for m in plex.library.search(libtype='movie')]
     logger.info('Got {} Movies from Plex', len(movies))
-    sys.exit()
 
     m = multiprocessing.Manager()
     lock = m.Lock()
